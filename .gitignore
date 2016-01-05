@@ -1,0 +1,11 @@
+config/config.php
+
+/vendor
+/storage/logs/*
+
+composer.phar
+composer.lock
+
+.DS_Store
+*.gz
+*.zip

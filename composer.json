@@ -1,0 +1,14 @@
+{
+	"require": {
+		"aws/aws-sdk-php": "3.12.*"
+	},
+	
+	"autoload": {
+		"classmap": [
+			"S3LP"
+		],
+		"psr-4": {
+			"S3LP\\": "S3LP/"
+		}
+	}
+}
