@@ -7,19 +7,19 @@ require 'vendor/Autoload.php';
 $cfg = require 'config/config.php';
 
 
-if(   FALSE   ) {
-
 /*
 Download log files from S3
 ---------------------------
 */
-$logs = new \S3LP\Logs( $cfg['aws'], 'storage/logs/' );
+$logs = new \S3LP\Logs( $cfg['aws'], 'logs/', 'storage/logs/' );
+
 try {
-	$logs->download();
+	$files = $logs->download();
 } catch(Exception $e) {
-	
+	exit( $e->getMessage() );
 }
 
+	
 
 /*
 Parse logs
@@ -27,21 +27,15 @@ Array of GET requests (200 and 206 HTTP status codes)
 ------------------------------------------------------
 */
 try {
-	$data = $logs->parseLogs('DELETE');
+	$data = $logs->parseLogs($files, 'DELETE');
 	
-	if( !$data ) {
-		exit('No requests found');
+	if(!$data) {
+		exit('No GET requests found in logs');
 	}
 } catch(Exception $e) {
-	
+	exit( $e->getMessage() );
 }
 
-}
-
-// DUMMY TEST DATA
-$data = [
-	['object'=>'mikehealy.au/pathtomy/file.jpg', 'date'=>'2015-12-19 08:22:14', 'http'=>200, 'bytes'=>mt_rand(200, 102830239)],
-];
 
 /*
 Save to DB (if you want, I'm not your boss)
@@ -56,4 +50,8 @@ if( isset($cfg['pdo']) ) {
 	} catch(Exception $e) {
 		exit( $e->getMessage() );
 	}
+} else {
+	
+	echo 'No DB connection';
+	var_dump($data);
 }

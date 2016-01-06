@@ -52,9 +52,9 @@ class Db {
 	*/
 	public function insert($data) {
 		
-		$inserts = 0;
+		$count = 0;
 		
-		$sql = "INSERT INTO `{$this->table}` (bucket, date, http_status, object, bytes_transferred) VALUES (:bucket, :date, :http, :object, :bytes)";
+		$sql = "INSERT INTO `{$this->table}` (bucket, date, http_status, ip, object, bytes_transferred) VALUES (:bucket, :date, :http, :ip, :object, :bytes)";
 		$query = $this->pdo->prepare($sql);
 		
 		foreach($data as $r) {
@@ -67,19 +67,20 @@ class Db {
 				':bucket' => $bucket,
 				':date'   => $r['date'],
 				':http'   => $r['http'],
+				':ip'	  => $r['ip'],
 				':object' => $object,
 				':bytes'  => $r['bytes']
 			]);
 			
 			if($result) {
-				$inserts++;
+				$count++;
 			} else {
 				$e = $query->errorInfo();
 				throw new \Exception($e[2], $e[1]);
 			}
 		}
 		
-		return $inserts;
+		return $count;
 	}
 	
 }
